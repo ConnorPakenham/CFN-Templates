@@ -1,0 +1,117 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Description" : "Create a single EC2 Instance with SSM Capabilities",
+    
+    "Parameters" : {
+        "InstanceKey" : {
+            "Type" : "String",
+            "Description" : "Enter a valid Key Name."
+        },
+        "InstanceAMI" : {
+            "Type" : "String",
+            "Description" : "Enter a valid instance AMI."
+        },
+        "RootVolumeSize" : {
+            "Type" : "Number",
+            "Description" : "Enter a Root volume size."
+        }
+    },
+
+    "Resources" : {
+        "EC2Instance" : {
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "KeyName" : "cfn-key",
+                "ImageId" : {
+                    "Ref" : "InstanceAMI"
+                },
+                "IamInstanceProfile" : {
+                    "Ref" : "SSMInstanceProfile"
+                },
+                "BlockDeviceMappings" : [
+                    {
+                        "DeviceName" : "/dev/xvda",
+                        "Ebs" : {
+                            "VolumeType" : "gp2",
+                            "VolumeSize" : {
+                                "Ref" : "RootVolumeSize"
+                            }
+                        }
+                    }
+                ],
+                "SecurityGroupIds" : [ 
+                    {
+                        "Fn::GetAtt": [
+                            "SSHSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "Tags" : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "CFN-EC2Instance"
+                    }
+                ]
+            }
+        },
+
+        "SSHSecurityGroup" : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : "CFN Security Group for SSH Access",
+                "GroupName" : "CFN-SecGroup",
+                "SecurityGroupIngress" : {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : 22,
+                    "ToPort" : 22,
+                    "CidrIp" : "0.0.0.0/0"
+                },
+                "Tags" : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "CFN-SecGroup"
+                    }
+                ]
+            }
+        },
+
+        "SSMInstanceProfile" : {
+            "Type" : "AWS::IAM::InstanceProfile",
+            "Properties" : {
+                "InstanceProfileName" : "CFN-SSM-InstanceProfile",
+                "Roles" : [ 
+                    {
+                        "Ref" : "SSMRole"
+                    }
+                ]
+            }
+        },
+
+        "SSMRole" : {
+            "Type" : "AWS::IAM::Role",
+            "Properties" : {
+                "RoleName" : "CFN-SSMRole",
+                "AssumeRolePolicyDocument" : {
+                    "Version" : "2012-10-17",
+                    "Statement": [ 
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [ 
+                                    "ec2.amazonaws.com" 
+                                ]
+                            },
+                            "Action": [ 
+                                "sts:AssumeRole" 
+                            ]
+                        } 
+                    ]
+                },
+                "ManagedPolicyArns" : [
+                    "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+                ]
+            }
+        }
+    }
+}
