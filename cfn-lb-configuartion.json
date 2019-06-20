@@ -1,0 +1,56 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Description" : "Create a publically facing Load balancer",
+
+    "Resources" : {
+
+        "SimpleApplicationLoadBalancer" : {
+            "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties" : {
+                "Name" : "CFN-AppLoadBalancer",
+                "Type" : "application",
+                "Subnets" : [
+                    "subnet-5347e17d",
+                    "subnet-8c046fc6"
+                ],
+                "SecurityGroups" : [
+                    {
+                        "Fn::GetAtt": [
+                            "WebSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ]
+            }
+        },
+
+        "WebSecurityGroup" : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : "CFN Security Group for SSH Access",
+                "GroupName" : "CFN-Web-SecGroup",
+                "SecurityGroupIngress" : [
+                    {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : 80,
+                    "ToPort" : 80,
+                    "CidrIp" : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort" : 443,
+                        "ToPort" : 443,
+                        "CidrIp" : "0.0.0.0/0"
+                    }
+                ],
+                "Tags" : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "CFN-Web-SecGroup"
+                    }
+                ]
+            }
+        },
+
+    }
+}
