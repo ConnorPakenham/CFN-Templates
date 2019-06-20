@@ -4,7 +4,7 @@
 
     "Resources" : {
 
-        "SimpleApplicationLoadBalancer" : {
+        "ApplicationLoadBalancer" : {
             "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
             "Properties" : {
                 "Name" : "CFN-AppLoadBalancer",
@@ -21,6 +21,16 @@
                         ]
                     }
                 ]
+            }
+        },
+
+
+        "TargetGroup" : {
+            "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties" : {
+                "Port" : "443",
+                "Protocol" : "HTTPS",
+                "VpcId" : "vpc-0e836c74"
             }
         },
 
@@ -50,7 +60,6 @@
                     }
                 ]
             }
-        },
-
+        }
     }
 }
