@@ -1,0 +1,107 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Description" : "Create a publically facing Load balancer",
+
+    "Parameters" : {
+        "NumberOfInstances" : {
+            "Type" : "Number",
+            "Description" : "Enter the number of instances you wish to launch. Between 1 and 5",
+            "Default" : "1",
+            "MinValue" : "1",
+            "MaxValue" : "5"
+        }
+    },
+
+    "Conditions" : {
+        "LaunchInstance1" : {
+            "Fn::Equals" : ["1", "1"]
+        },
+        "LaunchInstance2" : {
+            "Fn::Not" : [ 
+                {
+                    "Fn::Equals" : [ {"Ref" : "NumberOfInstances"}, "1"]
+                }
+            ]
+        },
+        "LaunchInstance3" : {
+            "Fn::And" : [
+                {
+                    "Fn::Not" : [ 
+                        {
+                            "Fn::Equals" : [ {"Ref" : "NumberOfInstances"}, "1"]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not" : [ 
+                        {
+                            "Fn::Equals" : [ {"Ref" : "NumberOfInstances"}, "2"]
+                        }
+                    ]
+                }
+            ]
+        },
+        "LaunchInstance4" : {
+            "Fn::Or" : [
+                {
+                    "Fn::Equals" : [ {"Ref" : "NumberOfInstances"}, "4"]
+                },
+                {
+                    "Fn::Equals" : [ {"Ref" : "NumberOfInstances"}, "5"]
+                }
+            ]
+        },
+        "LaunchInstance5" : {
+            "Fn::Equals" : [{"Ref" : "NumberOfInstances"}, "5"]
+        }
+    },
+
+    "Resources" : {
+
+        "Instance1" : {
+            "Condition" : "LaunchInstance1",
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : "ami-08ba5beb76c5d8c04",
+                "InstanceType" : "t2.micro"
+            }
+        },
+
+        "Instance2" : {
+            "Condition" : "LaunchInstance2",
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : "ami-08ba5beb76c5d8c04",
+                "InstanceType" : "t2.micro"
+            }
+        },
+
+        "Instance3" : {
+            "Condition" : "LaunchInstance3",
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : "ami-08ba5beb76c5d8c04",
+                "InstanceType" : "t2.micro"
+            }
+        },
+
+        "Instance4" : {
+            "Condition" : "LaunchInstance4",
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : "ami-08ba5beb76c5d8c04",
+                "InstanceType" : "t2.micro"
+            }
+        },
+
+        "Instance5" : {
+            "Condition" : "LaunchInstance5",
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "ImageId" : "ami-08ba5beb76c5d8c04",
+                "InstanceType" : "t2.micro"
+            }
+        }
+
+    }
+}
