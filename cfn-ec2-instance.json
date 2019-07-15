@@ -21,11 +21,9 @@
         "EC2Instance" : {
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
-                "KeyName" : [
-                    {
+                "KeyName" : {
                         "Ref" : "InstanceKey"
-                    }
-                ],
+                },
                 "ImageId" : {
                     "Ref" : "InstanceAMI"
                 },
@@ -64,7 +62,6 @@
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "CFN Security Group for SSH Access",
-                "GroupName" : "CFN-SecGroup",
                 "SecurityGroupIngress" : {
                     "IpProtocol" : "tcp",
                     "FromPort" : 22,
@@ -83,7 +80,6 @@
         "SSMInstanceProfile" : {
             "Type" : "AWS::IAM::InstanceProfile",
             "Properties" : {
-                "InstanceProfileName" : "CFN-SSM-InstanceProfile",
                 "Roles" : [ 
                     {
                         "Ref" : "SSMRole"
@@ -95,7 +91,6 @@
         "SSMRole" : {
             "Type" : "AWS::IAM::Role",
             "Properties" : {
-                "RoleName" : "CFN-SSMRole",
                 "AssumeRolePolicyDocument" : {
                     "Version" : "2012-10-17",
                     "Statement": [ 
