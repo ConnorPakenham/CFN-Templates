@@ -21,7 +21,11 @@
         "EC2Instance" : {
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
-                "KeyName" : "cfn-key",
+                "KeyName" : [
+                    {
+                        "Ref" : "InstanceKey"
+                    }
+                ],
                 "ImageId" : {
                     "Ref" : "InstanceAMI"
                 },
